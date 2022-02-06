@@ -17,6 +17,8 @@ window = core.game_setup()
 pygame.init()
 background = core.load_image(core.BACKGROUND_IMAGE)
 clock = pygame.time.Clock()
+counterFont = pygame.font.SysFont('Verdana', 60)
+welcomeFont = pygame.font.SysFont('Arial', 30)
 
 while True:
     window.blit(background, (0, 0))
@@ -30,5 +32,8 @@ while True:
                 pygame.quit()
                 sys.exit()
 
+    window.blit(counterFont.render("Get Ready!", True, core.GREEN), (int(window.get_width()/2)-150, int(window.get_height()/3)))
+    window.blit(welcomeFont.render("Press UP to start", True, core.YELLOW), (int(window.get_width()/2)-110, int(window.get_height()/2)))
+    window.blit(counterFont.render(str(int(0)), True, core.WHITE), (int(window.get_width()/2)-25, int(window.get_height()/5)))
     pygame.display.update()
     clock.tick(10)

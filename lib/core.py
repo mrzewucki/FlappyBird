@@ -15,6 +15,11 @@ PIPE_IMAGE = 'images/pipe.png'
 BACKGROUND_IMAGE = 'images/background.jpg'
 BIRD_IMAGE = 'images/bird.png'
 
+# Define font colors (in RGB)
+GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
+WHITE = (255,255,255)
+
 # Define global game window
 window = None
 
