@@ -33,3 +33,10 @@ def generate_pipes(window, pipe_image):
     ]
 
     return pipe
+
+def move_pipes(upper,lower,v):
+    for upperPipe, lowerPipe in zip(upper, lower):
+        upperPipe['x'] += v
+        lowerPipe['x'] += v
+
+    return (upper,lower)

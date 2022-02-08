@@ -71,10 +71,7 @@ def start_game():
                     pygame.quit()
                     sys.exit()
 
-        # Move pipes to the left
-        for upperPipe, lowerPipe in zip(upper_pipes, lower_pipes):
-            upperPipe['x'] += pipe_velocity
-            lowerPipe['x'] += pipe_velocity
+        (upper_pipes,lower_pipes) = engine.move_pipes(upper_pipes,lower_pipes,pipe_velocity)
 
         # Generate new pipe when some of them is about to leave the screen
         if 0 < upper_pipes[0]['x'] < 5:
