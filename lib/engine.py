@@ -8,8 +8,8 @@ __maintainer__ = "Marcin Rzewucki"
 __email__ = "marcin@rzewucki.com"
 __status__ = "Development"
 
+import pygame
 import random
-
 
 # Generate pipes on the screen
 def generate_pipes(window, pipe_height):
@@ -94,3 +94,9 @@ def redraw_pipes(window, upper_pipe_image, lower_pipe_image, lower_pipe_size, up
                     (lowerPipe['x'], lowerPipe['y']))
 
     return (upper,lower)
+
+def generate_lower_pipe(pipe_image,lower_pipe_height):
+    pipe_width = pipe_image.get_width()
+    lower_pipe = pygame.transform.scale(pipe_image,(pipe_width,lower_pipe_height))
+
+    return lower_pipe

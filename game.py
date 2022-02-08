@@ -67,12 +67,9 @@ def start_game():
         # If the pipe is out, remove it
         if upper_pipes[0]['x'] < -pipe_width:
             (upper_pipes,lower_pipes) = engine.remove_pipes(upper_pipes,lower_pipes)
-            # Generate size of lower pipe
+            # Generate random size lower pipe
             lower_pipe_height = random.randint(160,pipe_height)
-            if lower_pipe_height != pipe_height:
-                lower_pipe = pygame.transform.scale(pipe,(pipe_width,lower_pipe_height))
-            else:
-                lower_pipe = pipe
+            lower_pipe = engine.generate_lower_pipe(pipe,lower_pipe_height)
 
         window.blit(background, (0, 0))
         (upper_pipes,lower_pipes) = engine.redraw_pipes(window, upper_pipe, lower_pipe, lower_pipe_height, upper_pipes, lower_pipes)
