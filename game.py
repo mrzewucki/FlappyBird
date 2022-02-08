@@ -41,10 +41,19 @@ def start_game():
     global horizontal
     global vertical
     pipe_height = pipe.get_height()
+    bird_height = bird.get_height()
     pipe_width = pipe.get_width()
     lower_pipe = pipe
     pipe_velocity = -4
     lower_pipe_height = pipe_height
+    flappy_bird = {
+        'pos_y': vertical,
+        'velocity': -9,
+        'max_velocity': 10,
+        'speed': 1,
+        'flap_velocity': -8,
+        'flapped': False
+    }
 
     (upper_pipes,lower_pipes) = engine.draw_initial_pipes(window,pipe_height)
 
@@ -57,6 +66,11 @@ def start_game():
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                elif event.key == pygame.K_UP:
+                    engine.bird_flap(flappy_bird)
+
+        engine.bird_move(window_height, flappy_bird,bird_height)
+        print(f"vertical={flappy_bird['pos_y']}")
 
         (upper_pipes,lower_pipes) = engine.move_pipes(upper_pipes,lower_pipes,pipe_velocity)
 
@@ -72,6 +86,7 @@ def start_game():
             lower_pipe = engine.generate_lower_pipe(pipe,lower_pipe_height)
 
         window.blit(background, (0, 0))
+        window.blit(bird, (horizontal, flappy_bird['pos_y']))
         (upper_pipes,lower_pipes) = engine.redraw_pipes(window, upper_pipe, lower_pipe, lower_pipe_height, upper_pipes, lower_pipes)
 
         pygame.display.update()

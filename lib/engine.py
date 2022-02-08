@@ -100,3 +100,19 @@ def generate_lower_pipe(pipe_image,lower_pipe_height):
     lower_pipe = pygame.transform.scale(pipe_image,(pipe_width,lower_pipe_height))
 
     return lower_pipe
+
+def bird_move(window_height, flappy_bird, bird_height):
+    elevation = window_height * 0.8
+    if flappy_bird['velocity'] < flappy_bird['max_velocity'] and not flappy_bird['flapped']:
+        flappy_bird['velocity'] += flappy_bird['speed']
+
+    if flappy_bird['flapped']:
+        flappy_bird['flapped'] = False
+
+    flappy_bird['pos_y'] += \
+        min(flappy_bird['velocity'], elevation - flappy_bird['pos_y'] - bird_height)
+
+def bird_flap(flappy_bird):
+    if flappy_bird['pos_y'] > 0:
+        flappy_bird['velocity'] = flappy_bird['flap_velocity']
+        flappy_bird['flapped'] = True
