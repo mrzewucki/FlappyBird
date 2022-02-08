@@ -44,7 +44,7 @@ def start_game():
     pipe_width = pipe.get_width()
     lower_pipe = pipe
     pipe_velocity = -4
-    lower_pipe_size = pipe_height
+    lower_pipe_height = pipe_height
 
     (upper_pipes,lower_pipes) = engine.draw_initial_pipes(window,pipe_height)
 
@@ -68,14 +68,14 @@ def start_game():
         if upper_pipes[0]['x'] < -pipe_width:
             (upper_pipes,lower_pipes) = engine.remove_pipes(upper_pipes,lower_pipes)
             # Generate size of lower pipe
-            lower_pipe_size = random.randint(160,pipe_height)
-            if lower_pipe_size != pipe_height:
-                lower_pipe = pygame.transform.scale(pipe,(pipe_width,lower_pipe_size))
+            lower_pipe_height = random.randint(160,pipe_height)
+            if lower_pipe_height != pipe_height:
+                lower_pipe = pygame.transform.scale(pipe,(pipe_width,lower_pipe_height))
             else:
                 lower_pipe = pipe
 
         window.blit(background, (0, 0))
-        (upper_pipes,lower_pipes) = engine.redraw_pipes(window, upper_pipe, lower_pipe, lower_pipe_size, upper_pipes, lower_pipes)
+        (upper_pipes,lower_pipes) = engine.redraw_pipes(window, upper_pipe, lower_pipe, lower_pipe_height, upper_pipes, lower_pipes)
 
         pygame.display.update()
         clock.tick(32)
