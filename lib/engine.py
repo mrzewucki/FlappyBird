@@ -101,7 +101,7 @@ def generate_lower_pipe(pipe_image,lower_pipe_height):
 
     return lower_pipe
 
-def bird_move(window_height, flappy_bird, bird_height):
+def bird_move(window_height, flappy_bird):
     elevation = window_height * 0.8
     if flappy_bird['velocity'] < flappy_bird['max_velocity'] and not flappy_bird['flapped']:
         flappy_bird['velocity'] += flappy_bird['speed']
@@ -110,15 +110,15 @@ def bird_move(window_height, flappy_bird, bird_height):
         flappy_bird['flapped'] = False
 
     flappy_bird['pos_y'] += \
-        min(flappy_bird['velocity'], elevation - flappy_bird['pos_y'] - bird_height)
+        min(flappy_bird['velocity'], elevation - flappy_bird['pos_y'] - flappy_bird['height'])
 
 def bird_flap(flappy_bird):
     if flappy_bird['pos_y'] > 0:
         flappy_bird['velocity'] = flappy_bird['flap_velocity']
         flappy_bird['flapped'] = True
 
-def get_score(horizontal, bird_width, pipe_width, upper, current_score):
-    bird_pos = horizontal + bird_width/2
+def get_score(flappy_bird, pipe_width, upper, current_score):
+    bird_pos = flappy_bird['pos_x'] + flappy_bird['width']/2
     for pipes in upper:
         pipeMidPos = pipes['x'] + pipe_width/2
         # Add point if bird passes a pipe
@@ -127,22 +127,22 @@ def get_score(horizontal, bird_width, pipe_width, upper, current_score):
 
     return current_score
 
-def is_game_over(window_height, pipe_height, pipe_width, bird_height, horizontal, vertical, upper, lower):
+def is_game_over(window_height, flappy_bird, pipe_height, pipe_width, upper, lower):
     elevation = window_height * 0.8
     # Game over if bird is too high or too low
-    if vertical > elevation - 51 or vertical < 0:
+    if flappy_bird['pos_y'] > elevation - 51 or flappy_bird['pos_y'] < 0:
         return True
 
     # Game over if bird hit upper pipe
     for pipes in upper:
-        if (vertical < pipe_height + pipes['y'] and
-           abs(horizontal - pipes['x']) < pipe_width):
+        if (flappy_bird['pos_y'] < pipe_height + pipes['y'] and
+           abs(flappy_bird['pos_x'] - pipes['x']) < pipe_width):
             return True
 
     # Game over if bird hit lower pipe
     for pipes in lower:
-        if (vertical + bird_height > pipes['y']) and\
-                abs(horizontal - pipes['x']) < pipe_width:
+        if (flappy_bird['pos_y'] + flappy_bird['height'] > pipes['y']) and\
+                abs(flappy_bird['pos_x'] - pipes['x']) < pipe_width:
             return True
 
     return False

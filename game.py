@@ -42,14 +42,15 @@ def start_game():
     global vertical
     pipe_height = pipe.get_height()
     pipe_width = pipe.get_width()
-    bird_height = bird.get_height()
-    bird_width = bird.get_width()
     lower_pipe = pipe
     pipe_velocity = -4
     lower_pipe_height = pipe_height
     score = 0
     flappy_bird = {
+        'height': bird.get_height(),
+        'width': bird.get_width(),
         'pos_y': vertical,
+        'pos_x': horizontal,
         'velocity': -9,
         'max_velocity': 10,
         'speed': 1,
@@ -71,11 +72,10 @@ def start_game():
                 elif event.key == pygame.K_UP:
                     engine.bird_flap(flappy_bird)
 
-        engine.bird_move(window_height, flappy_bird,bird_height)
-        score = engine.get_score(horizontal,bird_width,pipe_width,upper_pipes,score)
-        game_over = engine.is_game_over(window_height, pipe_height, pipe_width, bird_height,
-                                        horizontal,
-                                        flappy_bird['pos_y'],
+        engine.bird_move(window_height, flappy_bird)
+        score = engine.get_score(flappy_bird,pipe_width,upper_pipes,score)
+        game_over = engine.is_game_over(window_height, flappy_bird, 
+                                        pipe_height, pipe_width,
                                         upper_pipes,
                                         lower_pipes)
         if game_over:
