@@ -40,7 +40,6 @@ vertical = int((window_height - bird.get_height())/2) - 50
 def start_game():
     global horizontal
     global vertical
-    score = 0
     pipes = {
         'height': pipe.get_height(),
         'width': pipe.get_width(),
@@ -53,6 +52,7 @@ def start_game():
         'lower': []
     }
     flappy_bird = {
+        'score': 0,
         'height': bird.get_height(),
         'width': bird.get_width(),
         'pos_y': vertical,
@@ -79,7 +79,7 @@ def start_game():
                     engine.bird_flap(flappy_bird)
 
         engine.bird_move(window_height, flappy_bird)
-        score = engine.get_score(flappy_bird, pipes, score)
+        flappy_bird = engine.get_score(flappy_bird, pipes)
         game_over = engine.is_game_over(window_height, flappy_bird, pipes)
         if game_over:
             return
@@ -97,7 +97,7 @@ def start_game():
             pipes = engine.generate_lower_pipe(pipes)
 
         window.blit(background, (0, 0))
-        window.blit(counterFont.render(str(int(score)), True, core.WHITE),
+        window.blit(counterFont.render(str(int(flappy_bird['score'])), True, core.WHITE),
                     (int(window_width/2)-25, int(window_height/5)))
         window.blit(bird, (horizontal, flappy_bird['pos_y']))
         pipes = engine.redraw_pipes(window, pipes)

@@ -117,15 +117,15 @@ def bird_flap(flappy_bird):
         flappy_bird['velocity'] = flappy_bird['flap_velocity']
         flappy_bird['flapped'] = True
 
-def get_score(flappy_bird, pipes, current_score):
+def get_score(flappy_bird, pipes):
     bird_pos = flappy_bird['pos_x'] + flappy_bird['width']/2
     for pipe in pipes['upper']:
         pipeMidPos = pipe['x'] + pipes['width']/2
         # Add point if bird passes a pipe
         if pipeMidPos <= bird_pos < pipeMidPos + 4:
-            current_score += 1
+            flappy_bird['score'] += 1
 
-    return current_score
+    return flappy_bird
 
 def is_game_over(window_height, flappy_bird, pipes):
     elevation = window_height * 0.8
