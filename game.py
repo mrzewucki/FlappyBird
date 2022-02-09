@@ -24,18 +24,19 @@ pygame.init()
 background = core.load_image(core.BACKGROUND_IMAGE)
 bird = core.load_image(core.BIRD_IMAGE)
 pipe = core.load_image(core.PIPE_IMAGE)
+scorebox = core.load_image(core.SCOREBOX_IMAGE)
 upper_pipe = pygame.transform.rotate(pipe, 180)
 
 # Resize bird image
 bird = pygame.transform.scale(bird, (60, 50))
 clock = pygame.time.Clock()
 counterFont = pygame.font.SysFont('Verdana', 60)
+gameoverFont = pygame.font.SysFont('Verdana', 30)
 welcomeFont = pygame.font.SysFont('Arial', 30)
 
 # Set bird starting position
 horizontal = int(window_width/2) - 30
 vertical = int((window_height - bird.get_height())/2) - 50
-
 
 def start_game():
     global horizontal
@@ -82,7 +83,33 @@ def start_game():
         flappy_bird = engine.get_score(flappy_bird, pipes)
         game_over = engine.is_game_over(window_height, flappy_bird, pipes)
         if game_over:
-            return
+            scorebox_y = 10
+            points = 0
+            scorebox_height = scorebox.get_height()
+            while True:
+                window.blit(background, (0, 0))
+                window.blit(counterFont.render("Game Over", True, core.RED),
+                    (int(window_width/2)-150, int(150)))
+
+                window.blit(scorebox, (window_width/4, window_height-scorebox_y))
+                if core.play_again():
+                    return
+
+                if scorebox_y < window_height/2 + scorebox_height:
+                    scorebox_y += 10
+                    clock.tick(32)
+                else:
+                    window.blit(welcomeFont.render("Press key to continue", True,
+                core.YELLOW), (int(window_width/2)-150, int(window_height/2+scorebox_height/2)))
+                    window.blit(gameoverFont.render(str(int(points)), True, core.WHITE),
+                    (int(window_width/2)+60, int(window_height/2 - 85)))
+                    if points < flappy_bird['score']:
+                        points += 1
+                        clock.tick(5)
+                    else:
+                        clock.tick(32)
+
+                pygame.display.update()
 
         pipes = engine.move_pipes(pipes)
 
