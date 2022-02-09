@@ -40,12 +40,18 @@ vertical = int((window_height - bird.get_height())/2) - 50
 def start_game():
     global horizontal
     global vertical
-    pipe_height = pipe.get_height()
-    pipe_width = pipe.get_width()
-    lower_pipe = pipe
-    pipe_velocity = -4
-    lower_pipe_height = pipe_height
     score = 0
+    pipes = {
+        'height': pipe.get_height(),
+        'width': pipe.get_width(),
+        'pipe': pipe,
+        'upper_pipe': upper_pipe,
+        'lower_pipe': pipe,
+        'lower_pipe_height': pipe.get_height(),
+        'velocity': -4,
+        'upper': [],
+        'lower': []
+    }
     flappy_bird = {
         'height': bird.get_height(),
         'width': bird.get_width(),
@@ -58,7 +64,7 @@ def start_game():
         'flapped': False
     }
 
-    (upper_pipes,lower_pipes) = engine.draw_initial_pipes(window,pipe_height)
+    pipes = engine.draw_initial_pipes(window,pipes)
 
     while True:
         for event in pygame.event.get():
@@ -73,32 +79,28 @@ def start_game():
                     engine.bird_flap(flappy_bird)
 
         engine.bird_move(window_height, flappy_bird)
-        score = engine.get_score(flappy_bird,pipe_width,upper_pipes,score)
-        game_over = engine.is_game_over(window_height, flappy_bird, 
-                                        pipe_height, pipe_width,
-                                        upper_pipes,
-                                        lower_pipes)
+        score = engine.get_score(flappy_bird, pipes, score)
+        game_over = engine.is_game_over(window_height, flappy_bird, pipes)
         if game_over:
             return
 
-        (upper_pipes,lower_pipes) = engine.move_pipes(upper_pipes,lower_pipes,pipe_velocity)
+        pipes = engine.move_pipes(pipes)
 
         # Generate new pipe when some of them is about to leave the screen
-        if 0 < upper_pipes[0]['x'] < 5:
-            (upper_pipes,lower_pipes) = engine.add_pipes(window,pipe_height,upper_pipes,lower_pipes)
+        if 0 < pipes['upper'][0]['x'] < 5:
+            pipes = engine.add_pipes(window, pipes)
 
         # If the pipe is out, remove it
-        if upper_pipes[0]['x'] < -pipe_width:
-            (upper_pipes,lower_pipes) = engine.remove_pipes(upper_pipes,lower_pipes)
+        if pipes['upper'][0]['x'] < -pipes['width']:
+            pipes = engine.remove_pipes(pipes)
             # Generate random size lower pipe
-            lower_pipe_height = random.randint(160,pipe_height)
-            lower_pipe = engine.generate_lower_pipe(pipe,lower_pipe_height)
+            pipes = engine.generate_lower_pipe(pipes)
 
         window.blit(background, (0, 0))
         window.blit(counterFont.render(str(int(score)), True, core.WHITE),
                     (int(window_width/2)-25, int(window_height/5)))
         window.blit(bird, (horizontal, flappy_bird['pos_y']))
-        (upper_pipes,lower_pipes) = engine.redraw_pipes(window, upper_pipe, lower_pipe, lower_pipe_height, upper_pipes, lower_pipes)
+        pipes = engine.redraw_pipes(window, pipes)
 
         pygame.display.update()
         clock.tick(32)

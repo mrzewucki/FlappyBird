@@ -33,73 +33,73 @@ def generate_pipes(window, pipe_height):
 
     return pipe
 
-def draw_initial_pipes(window, pipe_height):
+def draw_initial_pipes(window, pipes):
     # Generate first two pipes
-    pipe1 = generate_pipes(window, pipe_height)
-    pipe2 = generate_pipes(window, pipe_height)
+    pipe1 = generate_pipes(window, pipes['height'])
+    pipe2 = generate_pipes(window, pipes['height'])
 
     # Create pair of upper pipes
-    upper_pipes = [
+    pipes['upper'] = [
         {'x': pipe1[0]['x'],'y': pipe1[0]['y'], 'img': None},
-        {'x': pipe1[0]['x'] + 280,'y': pipe2[0]['y'], 'img': None},
+        {'x': pipe1[0]['x'] + 280,'y': pipe2[0]['y'], 'img': None}
     ]
 
     # Create pair of lower pipes
-    lower_pipes = [
+    pipes['lower'] = [
         {'x': pipe1[1]['x'], 'y': pipe1[1]['y'], 'img': None},
-        {'x': pipe1[1]['x'] + 280,'y': pipe2[1]['y'], 'img': None},
+        {'x': pipe1[1]['x'] + 280,'y': pipe2[1]['y'], 'img': None}
     ]
 
-    return(upper_pipes,lower_pipes)
+    return pipes
 
-def move_pipes(upper,lower,v):
-    for upperPipe, lowerPipe in zip(upper, lower):
-        upperPipe['x'] += v
-        lowerPipe['x'] += v
+def move_pipes(pipes):
+    for upperPipe, lowerPipe in zip(pipes['upper'], pipes['lower']):
+        upperPipe['x'] += pipes['velocity']
+        lowerPipe['x'] += pipes['velocity']
 
-    return (upper,lower)
+    return pipes
 
-def add_pipes(window, pipe_height, upper,lower):
-    newpipe = generate_pipes(window, pipe_height)
+def add_pipes(window, pipes):
+    newpipe = generate_pipes(window, pipes['height'])
     newpipe[0]['img'] = None
-    upper.append(newpipe[0])
+    pipes['upper'].append(newpipe[0])
     newpipe[1]['img'] = None
-    lower.append(newpipe[1])
+    pipes['lower'].append(newpipe[1])
 
-    return (upper,lower)
+    return pipes
 
-def remove_pipes(upper,lower):
-    upper.pop(0)
-    lower.pop(0)
+def remove_pipes(pipes):
+    pipes['upper'].pop(0)
+    pipes['lower'].pop(0)
 
-    return (upper,lower)
+    return pipes
 
-def redraw_pipes(window, upper_pipe_image, lower_pipe_image, lower_pipe_size, upper,lower):
-    for upperPipe, lowerPipe in zip(upper, lower):
+def redraw_pipes(window, pipes):
+    for upperPipe, lowerPipe in zip(pipes['upper'], pipes['lower']):
         if not upperPipe['img']:
-            window.blit(upper_pipe_image,
+            window.blit(pipes['upper_pipe'],
                     (upperPipe['x'], upperPipe['y']))
-            upperPipe['img'] = upper_pipe_image
+            upperPipe['img'] = pipes['upper_pipe']
         else:
             window.blit(upperPipe['img'],
                     (upperPipe['x'], upperPipe['y']))
             # print(f"({lowerPipe['x']}, {lowerPipe['y']+(lowerPipe['y'] - lower_pipe_size)}) {lowerPipe['y']}")
         if not lowerPipe['img']:
-            lowerPipe['y'] += 320 - lower_pipe_size
-            window.blit(lower_pipe_image,
+            lowerPipe['y'] += 320 - pipes['lower_pipe_height']
+            window.blit(pipes['lower_pipe'],
                 (lowerPipe['x'], lowerPipe['y']))
-            lowerPipe['img'] = lower_pipe_image
+            lowerPipe['img'] = pipes['lower_pipe']
         else:
             window.blit(lowerPipe['img'],
                     (lowerPipe['x'], lowerPipe['y']))
 
-    return (upper,lower)
+    return pipes
 
-def generate_lower_pipe(pipe_image,lower_pipe_height):
-    pipe_width = pipe_image.get_width()
-    lower_pipe = pygame.transform.scale(pipe_image,(pipe_width,lower_pipe_height))
+def generate_lower_pipe(pipes):
+    pipes['lower_pipe_height'] = random.randint(160,pipes['height'])
+    pipes['lower_pipe'] = pygame.transform.scale(pipes['pipe'],(pipes['width'],pipes['lower_pipe_height']))
 
-    return lower_pipe
+    return pipes
 
 def bird_move(window_height, flappy_bird):
     elevation = window_height * 0.8
@@ -117,32 +117,32 @@ def bird_flap(flappy_bird):
         flappy_bird['velocity'] = flappy_bird['flap_velocity']
         flappy_bird['flapped'] = True
 
-def get_score(flappy_bird, pipe_width, upper, current_score):
+def get_score(flappy_bird, pipes, current_score):
     bird_pos = flappy_bird['pos_x'] + flappy_bird['width']/2
-    for pipes in upper:
-        pipeMidPos = pipes['x'] + pipe_width/2
+    for pipe in pipes['upper']:
+        pipeMidPos = pipe['x'] + pipes['width']/2
         # Add point if bird passes a pipe
         if pipeMidPos <= bird_pos < pipeMidPos + 4:
             current_score += 1
 
     return current_score
 
-def is_game_over(window_height, flappy_bird, pipe_height, pipe_width, upper, lower):
+def is_game_over(window_height, flappy_bird, pipes):
     elevation = window_height * 0.8
     # Game over if bird is too high or too low
     if flappy_bird['pos_y'] > elevation - 51 or flappy_bird['pos_y'] < 0:
         return True
 
     # Game over if bird hit upper pipe
-    for pipes in upper:
-        if (flappy_bird['pos_y'] < pipe_height + pipes['y'] and
-           abs(flappy_bird['pos_x'] - pipes['x']) < pipe_width):
+    for pipe in pipes['upper']:
+        if (flappy_bird['pos_y'] < pipes['height'] + pipe['y'] and
+           abs(flappy_bird['pos_x'] - pipe['x']) < pipes['width']):
             return True
 
     # Game over if bird hit lower pipe
-    for pipes in lower:
-        if (flappy_bird['pos_y'] + flappy_bird['height'] > pipes['y']) and\
-                abs(flappy_bird['pos_x'] - pipes['x']) < pipe_width:
+    for pipe in pipes['lower']:
+        if (flappy_bird['pos_y'] + flappy_bird['height'] > pipe['y']) and\
+                abs(flappy_bird['pos_x'] - pipe['x']) < pipes['width']:
             return True
 
     return False
