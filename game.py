@@ -85,9 +85,6 @@ def start_game():
                     (int(window_width/2)-150, int(150)))
 
                 window.blit(scorebox, (window_width/4, window_height-scorebox_y))
-                event = core.quit_or_play()
-                if event:
-                    return
 
                 if scorebox_y < window_height/2 + scorebox_height:
                     scorebox_y += 10
@@ -102,6 +99,10 @@ def start_game():
                         clock.tick(5)
                     else:
                         clock.tick(32)
+                        # Quit or play again
+                        event = core.quit_or_play()
+                        if event:
+                            return
 
                 pygame.display.update()
 
