@@ -25,21 +25,45 @@ RED = (255, 0, 0)
 WHITE = (255,255,255)
 
 # Define global game window
-window = None
 bestresult = 0
 
 def game_setup():
+    game = {}
     # Load background image
-    imageObject = pygame.image.load(BACKGROUND_IMAGE)
+    background = pygame.image.load(BACKGROUND_IMAGE)
     # Get background height and width
-    height = imageObject.get_height()
-    width = imageObject.get_width()
+    game['window_height'] = background.get_height()
+    game['window_width'] = background.get_width()
 
-    window = pygame.display.set_mode((width, height))
+    window = pygame.display.set_mode((game['window_width'], game['window_height']))
     # Set title for game window
     pygame.display.set_caption("Flappy Bird")
+    pygame.init()
+    game['window'] = window
+    # Define screen fonts
+    game['COUNTER_FONT'] = pygame.font.SysFont('Verdana', 60)
+    game['GAME_OVER_FONT'] = pygame.font.SysFont('Verdana', 30)
+    game['WELCOME_FONT'] = pygame.font.SysFont('Arial', 30)
+    game['background'] = load_image(BACKGROUND_IMAGE)
+    game['bird'] = load_image(BIRD_IMAGE)
+    game['bird_height'] = game['bird'].get_height()
+    game['bird_width'] = game['bird'].get_width()
+    game['pipe'] = load_image(PIPE_IMAGE)
+    game['pipe_height'] = game['pipe'].get_height()
+    game['pipe_width'] = game['pipe'].get_width()
+    game['scorebox'] = load_image(SCOREBOX_IMAGE)
+    game['scorebox_height'] = game['scorebox'].get_height()
+    game['scorebox_width'] = game['scorebox'].get_width()
+    game['upper_pipe'] = pygame.transform.rotate(game['pipe'], 180)
+    # Resize bird image
+    game['bird'] = pygame.transform.scale(game['bird'], (60, 50))
+    game['clock'] = pygame.time.Clock()
+    # Set bird starting position
+    game['bird_horizontal'] = int(game['window_width']/2) - 30
+    game['bird_vertical'] = int((game['window_height'] - game['bird_height'])/2) - 50
+    game['bestresult'] = read_best_result()
 
-    return window
+    return game
 
 def load_image(name):
     return pygame.image.load(name)
