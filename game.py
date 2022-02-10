@@ -19,6 +19,7 @@ from lib import engine
 window = core.game_setup()
 window_width = window.get_width()
 window_height = window.get_height()
+bestresult = core.read_best_result()
 
 pygame.init()
 background = core.load_image(core.BACKGROUND_IMAGE)
@@ -68,7 +69,7 @@ def start_game():
     pipes = engine.draw_initial_pipes(window,pipes)
 
     while True:
-        event = core.quit_or_play()
+        event = core.quit_or_play(flappy_bird['score'])
         if event and event.key == pygame.K_UP:
             engine.bird_flap(flappy_bird)
 
@@ -92,15 +93,17 @@ def start_game():
                 else:
                     window.blit(welcomeFont.render("Press key to continue", True,
                 core.YELLOW), (int(window_width/2)-150, int(window_height/2+scorebox_height/2)))
+                    window.blit(gameoverFont.render(str(int(bestresult)), True, core.WHITE),
+                    (int(window_width/2)+40, int(window_height/2 - 35)))
                     window.blit(gameoverFont.render(str(int(points)), True, core.WHITE),
-                    (int(window_width/2)+60, int(window_height/2 - 85)))
+                    (int(window_width/2)+40, int(window_height/2 - 85)))
                     if points < flappy_bird['score']:
                         points += 1
                         clock.tick(5)
                     else:
                         clock.tick(32)
                         # Quit or play again
-                        event = core.quit_or_play()
+                        event = core.quit_or_play(flappy_bird['score'])
                         if event:
                             return
 

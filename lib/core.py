@@ -8,6 +8,7 @@ __maintainer__ = "Marcin Rzewucki"
 __email__ = "marcin@rzewucki.com"
 __status__ = "Development"
 
+import os
 import pygame
 import sys
 
@@ -25,6 +26,7 @@ WHITE = (255,255,255)
 
 # Define global game window
 window = None
+bestresult = 0
 
 def game_setup():
     # Load background image
@@ -42,14 +44,48 @@ def game_setup():
 def load_image(name):
     return pygame.image.load(name)
 
-def quit_or_play():
+def quit_game(result):
+    global bestresult
+
+    if int(result) > int(bestresult):
+        write_best_result(result)
+
+    pygame.quit()
+    sys.exit()
+
+def quit_or_play(result):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            quit_game(result)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                sys.exit()
+                quit_game(result)
             else:
+                if int(result) > int(bestresult):
+                    write_best_result(result)
                 return event
+
+def read_best_result():
+    global bestresult
+
+    filename = 'bestresult.txt'
+    if os.path.exists(filename):
+        try:
+            with open(filename, 'r') as f:
+                bestresult = f.read()
+            f.close()
+        except:
+            print("File read error")
+            sys.exit()
+
+    return int(bestresult)
+
+def write_best_result(result):
+    filename = 'bestresult.txt'
+    try:
+        with open(filename, 'w') as f:
+            f.write(str(result))
+        f.close()
+    except:
+        print("File write error")
+        sys.exit()
