@@ -68,16 +68,9 @@ def start_game():
     pipes = engine.draw_initial_pipes(window,pipes)
 
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-                elif event.key == pygame.K_UP:
-                    engine.bird_flap(flappy_bird)
+        event = core.quit_or_play()
+        if event and event.key == pygame.K_UP:
+            engine.bird_flap(flappy_bird)
 
         engine.bird_move(window_height, flappy_bird)
         flappy_bird = engine.get_score(flappy_bird, pipes)
@@ -92,7 +85,8 @@ def start_game():
                     (int(window_width/2)-150, int(150)))
 
                 window.blit(scorebox, (window_width/4, window_height-scorebox_y))
-                if core.play_again():
+                event = core.quit_or_play()
+                if event:
                     return
 
                 if scorebox_y < window_height/2 + scorebox_height:

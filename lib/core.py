@@ -42,7 +42,7 @@ def game_setup():
 def load_image(name):
     return pygame.image.load(name)
 
-def play_again():
+def quit_or_play():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -52,4 +52,4 @@ def play_again():
                 pygame.quit()
                 sys.exit()
             else:
-                return True
+                return event
