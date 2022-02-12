@@ -93,6 +93,8 @@ def start_game():
                         # Quit or play again
                         event = core.quit_or_play(flappy_bird['score'])
                         if event:
+                            if points > game['bestresult']:
+                                game['bestresult'] = points
                             return
 
                 pygame.display.update()
